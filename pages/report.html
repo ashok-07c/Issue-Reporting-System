@@ -140,7 +140,7 @@
             <input type="text" name="loc" id="location" placeholder="Street name or landmark" required />
             <br><br>
             <label for="issue">Select Issue type</label>
-            <select id="issue">
+            <select id="issue" required>
                 <option value="">Select</option>
                 <option value="Road Damage">
                     Road Damage
@@ -162,10 +162,10 @@
             </select>
             <br><br>
             <label for="desc">Issue Details</label>
-            <textarea name="desc" id="description" placeholder="Provide as much detail as possible..."></textarea>
+            <textarea name="desc" id="description" placeholder="Provide as much detail as possible..." required></textarea>
 
             <label for="imageUpload">Upload Photo Evidence</label>
-            <input type="file" id="imageUpload" name="imageUpload" accept="image/*" />
+            <input type="file" id="imageUpload" name="imageUpload" accept="image/*" required />
 
             <button type="submit">Submit Report</button>
         </form>
