@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report Issue</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background-image: linear-gradient(to right, #fa709a 0%, #fee140 100%);
+        }
+
+        #report-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #333;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        #report {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: #fa709a;
+        }
+
+        #desc {
+            resize: none;
+            min-height: 100px;
+        }
+
+        input[type="file"] {
+            font-size: 13px;
+            color: #666;
+            margin-top: 5px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        button[type="submit"] {
+            background: #fa709a;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        button[type="submit"]:hover {
+            background: #e65a85;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: -10px;
+        }
+
+        @media(max-width:768px) {
+
+            #body {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            #head {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .stats {
+                flex-direction: column;
+            }
+
+            #features {
+                flex-direction: column;
+                align-items: center;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="report-container">
+        <form action="status.html" id="complaintForm">
+            <h2>Report Complaint</h2>
+
+            <label for="u_name">Full Name</label>
+            <input type="text" name="name" id="u_name" placeholder="e.g. Ashok" required />
+
+            <label for="location">Location</label>
+            <input type="text" name="loc" id="location" placeholder="Street name or landmark" required />
+            <br><br>
+            <label for="issue">Select Issue type</label>
+            <select id="issue">
+                <option value="">Select</option>
+                <option value="Road Damage">
+                    Road Damage
+                </option>
+
+                <option value="Garbage Issue">
+                    Garbage Issue
+                </option>
+
+                <option value="Water Problem">
+                    Water Problem
+                </option>
+
+                <option value="Street Light">
+                    Street Light
+                </option>
+                <option value="Others">Others</option>
+
+            </select>
+            <br><br>
+            <label for="desc">Issue Details</label>
+            <textarea name="desc" id="description" placeholder="Provide as much detail as possible..."></textarea>
+
+            <label for="imageUpload">Upload Photo Evidence</label>
+            <input type="file" id="imageUpload" name="imageUpload" accept="image/*" />
+
+            <button type="submit">Submit Report</button>
+        </form>
+    </div>
+    <script>
+        document
+            .getElementById("complaintForm")
+            .addEventListener("submit", function (e) {
+
+                e.preventDefault();
+
+                let complaints =
+                    JSON.parse(localStorage.getItem("complaints")) || [];
+
+                let complaint = {
+
+
+                    id: Date.now(),
+
+                    user: localStorage.getItem("currentUser"),
+
+                    issue: document.getElementById("issue").value,
+
+                    location: document.getElementById("location").value,
+
+                    description: document.getElementById("description").value,
+
+                    status: "Pending",
+
+                    date: new Date().toLocaleString()
+
+                };
+
+                complaints.push(complaint);
+
+                localStorage.setItem(
+                    "complaints",
+                    JSON.stringify(complaints)
+                );
+
+                alert("Complaint Submitted!");
+
+                window.parent.loadPage("pages/status.html");
+
+            });
+
+
+
+    </script>
+</body>
+
+</html>

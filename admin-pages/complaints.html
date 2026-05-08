@@ -1,0 +1,387 @@
+<style>
+    .complaints-page {
+        padding: 25px;
+    }
+
+    .complaints-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .complaints-header input {
+        width: 280px;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        background: white;
+    }
+
+    .complaints-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* Card */
+    .complaint-card {
+        background: white;
+
+        border-radius: 18px;
+
+        padding: 22px;
+
+        box-shadow:
+            0 4px 12px rgba(0, 0, 0, 0.08);
+
+        transition: 0.3s;
+    }
+
+    .complaint-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+
+        margin-bottom: 20px;
+    }
+
+    .issue-section {
+        display: flex;
+        gap: 15px;
+    }
+
+    .issue-icon {
+        width: 50px;
+        height: 50px;
+
+        border-radius: 12px;
+
+        background: #eef2ff;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 24px;
+    }
+
+    .reported-user {
+        color: #64748b;
+        margin-top: 5px;
+    }
+
+    .description-box {
+        background: #f8fafc;
+
+        padding: 18px;
+
+        border-radius: 12px;
+
+        color: #334155;
+
+        margin-bottom: 20px;
+    }
+
+    .complaint-details {
+        display: flex;
+        gap: 25px;
+
+        color: #64748b;
+
+        margin-bottom: 20px;
+    }
+
+    .card-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .priority span {
+        color: #ef4444;
+        font-weight: bold;
+    }
+
+    .status {
+        padding: 7px 14px;
+        border-radius: 20px;
+
+        color: white;
+        font-size: 13px;
+    }
+
+    .pending {
+        background: #f59e0b;
+    }
+
+    .resolved {
+        background: #10b981;
+    }
+
+    .card-bottom select {
+        padding: 10px;
+        border: none;
+        border-radius: 10px;
+        background: #e2e8f0;
+    }
+
+    .empty-state {
+        background: white;
+        padding: 50px;
+        border-radius: 20px;
+        text-align: center;
+    }
+
+    @media(max-width:768px) {
+
+        #body {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        #head {
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .nav {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .stats {
+            flex-direction: column;
+        }
+
+        #features {
+            flex-direction: column;
+            align-items: center;
+        }
+
+    }
+</style>
+<div class="complaints-page">
+
+    <div class="complaints-header">
+
+
+        <div>
+            <h1>Complaint Management</h1>
+            <p>Monitor and resolve citizen issues</p>
+        </div>
+
+        <div class="header-actions">
+
+            <input type="text" id="searchInput" placeholder="Search complaints..." onkeyup="searchComplaints()">
+
+        </div>
+
+    </div>
+
+
+
+    <div id="complaintsContainer" class="complaints-container">
+    </div>
+
+</div>
+
+<script>
+
+    let complaints =
+        JSON.parse(localStorage.getItem("complaints")) || [];
+
+    let container =
+        document.getElementById("complaintsContainer");
+
+
+    function renderComplaints(data) {
+
+        container.innerHTML = "";
+
+        if (data.length === 0) {
+
+            container.innerHTML = `
+      <div class="empty-state">
+
+        <h2>No Complaints Found</h2>
+
+        <p>
+          No matching complaints available
+        </p>
+
+      </div>
+    `;
+
+            return;
+        }
+
+        data.reverse().forEach(c => {
+
+            let statusClass =
+                c.status === "Resolved"
+                    ? "resolved"
+                    : "pending";
+
+
+            let priority = "Medium";
+
+            if (c.issue === "Road Damage") {
+                priority = "High";
+            }
+
+            if (c.issue === "Garbage Issue") {
+                priority = "Low";
+            }
+
+
+            let icon = "📌";
+
+            if (c.issue === "Road Damage") {
+                icon = "🚧";
+            }
+
+            if (c.issue === "Garbage Issue") {
+                icon = "🗑";
+            }
+
+            if (c.issue === "Water Problem") {
+                icon = "🚰";
+            }
+
+            container.innerHTML += `
+
+      <div class="complaint-card">
+
+        <!-- Top -->
+        <div class="card-top">
+
+          <div class="issue-section">
+
+            <div class="issue-icon">
+              ${icon}
+            </div>
+
+            <div>
+
+              <h2>${c.issue}</h2>
+
+              <p class="reported-user">
+                Reported by ${c.user}
+              </p>
+
+            </div>
+
+          </div>
+
+          <span class="status ${statusClass}">
+            ${c.status}
+          </span>
+
+        </div>
+
+        <!-- Description -->
+        <div class="description-box">
+
+          ${c.description}
+
+        </div>
+
+        <!-- Details -->
+        <div class="complaint-details">
+
+          <div>📍 ${c.location}</div>
+
+          <div>🕒 ${c.date}</div>
+
+        </div>
+
+        <!-- Bottom -->
+        <div class="card-bottom">
+
+          <div class="priority">
+            Priority:
+            <span>${priority}</span>
+          </div>
+
+          <select
+            onchange="updateStatus(${c.id}, this.value)"
+          >
+
+            <option value="Pending"
+              ${c.status === "Pending"
+                    ? "selected" : ""}>
+              Pending
+            </option>
+
+            <option value="Resolved"
+              ${c.status === "Resolved"
+                    ? "selected" : ""}>
+              Resolved
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+    `;
+
+        });
+
+    }
+
+    renderComplaints(complaints);
+
+
+    function updateStatus(id, status) {
+
+        let complaints =
+            JSON.parse(localStorage.getItem("complaints")) || [];
+
+        let complaint =
+            complaints.find(c => c.id == id);
+
+        complaint.status = status;
+
+        localStorage.setItem(
+            "complaints",
+            JSON.stringify(complaints)
+        );
+
+        renderComplaints(complaints);
+
+    }
+
+
+    function searchComplaints() {
+
+        let value =
+            document.getElementById("searchInput")
+                .value.toLowerCase();
+
+        let filtered =
+            complaints.filter(c =>
+
+                c.issue.toLowerCase().includes(value)
+
+                ||
+
+                c.location.toLowerCase().includes(value)
+
+                ||
+
+                c.user.toLowerCase().includes(value)
+
+            );
+
+        renderComplaints(filtered);
+
+    }
+
+</script>

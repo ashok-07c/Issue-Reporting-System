@@ -1,0 +1,288 @@
+<style>
+    .table-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .table-top input {
+        padding: 12px;
+        width: 260px;
+        border: none;
+        border-radius: 10px;
+        background: white;
+    }
+
+    .table-wrapper {
+        background: white;
+        border-radius: 18px;
+        overflow: hidden;
+
+        box-shadow:
+            0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        background: #f8fafc;
+    }
+
+    th {
+        text-align: left;
+        padding: 18px;
+        color: #475569;
+    }
+
+    td {
+        padding: 18px;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    /* tr:hover .user-cell {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    } */
+
+    .avatar {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: #6366F1;
+        color: white;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .status {
+        padding: 6px 14px;
+        border-radius: 20px;
+        color: white;
+        font-size: 13px;
+    }
+
+    .pending {
+        background: #f59e0b;
+    }
+
+    .resolved {
+        background: #10b981;
+    }
+
+    select {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 8px;
+        background: #e2e8f0;
+    }
+
+    @media(max-width:768px) {
+
+        #body {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        #head {
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .nav {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .stats {
+            flex-direction: column;
+        }
+
+        #features {
+            flex-direction: column;
+            align-items: center;
+        }
+
+    }
+</style>
+<div class="complaints-page">
+
+
+    <div class="table-top">
+
+
+        <div>
+            <h1>Complaint Management</h1>
+            <p>Manage citizen complaints efficiently</p>
+        </div>
+
+        <input type="text" id="searchInput" placeholder="Search..." onkeyup="searchComplaints()">
+
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>User</th>
+                    <th>Issue</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="complaintsTable">
+
+            </tbody>
+
+        </table>
+
+
+    </div>
+
+</div>
+
+<script>
+
+    let complaints =
+        JSON.parse(localStorage.getItem("complaints")) || [];
+
+    let table =
+        document.getElementById("complaintsTable");
+
+    function renderComplaints(data) {
+
+        table.innerHTML = "";
+
+        data.reverse().forEach(c => {
+
+            let statusClass =
+                c.status === "Resolved"
+                    ? "resolved"
+                    : "pending";
+
+            table.innerHTML += `
+
+      <tr>
+
+        <td>
+          <div class="user-cell">
+
+            <div class="avatar">
+              ${c.user.charAt(0).toUpperCase()}
+            </div>
+
+            ${c.user}
+
+          </div>
+        </td>
+
+        <td>${c.issue}</td>
+
+        <td>${c.location}</td>
+
+        <td>
+
+          <span class="status ${statusClass}">
+            ${c.status}
+          </span>
+
+        </td>
+
+        <td>${c.date}</td>
+
+        <td>
+
+          <select
+            onchange="updateStatus(${c.id}, this.value)"
+          >
+
+            <option value="Pending"
+              ${c.status === "Pending"
+                    ? "selected" : ""}>
+              Pending
+            </option>
+
+            <option value="Resolved"
+              ${c.status === "Resolved"
+                    ? "selected" : ""}>
+              Resolved
+            </option>
+
+          </select>
+
+        </td>
+
+      </tr>
+
+    `;
+
+        });
+
+    }
+
+    renderComplaints(complaints);
+
+    /* Update Status */
+    function updateStatus(id, status) {
+
+        let complaints =
+            JSON.parse(localStorage.getItem("complaints")) || [];
+
+        let complaint =
+            complaints.find(c => c.id == id);
+
+        complaint.status = status;
+
+        localStorage.setItem(
+            "complaints",
+            JSON.stringify(complaints)
+        );
+
+        renderComplaints(complaints);
+
+    }
+
+    /* Search */
+    function searchComplaints() {
+
+        let value =
+            document.getElementById("searchInput")
+                .value.toLowerCase();
+
+        let filtered =
+            complaints.filter(c =>
+
+                c.issue.toLowerCase().includes(value)
+
+                ||
+
+                c.location.toLowerCase().includes(value)
+
+                ||
+
+                c.user.toLowerCase().includes(value)
+
+            );
+
+        renderComplaints(filtered);
+
+    }
+
+</script>

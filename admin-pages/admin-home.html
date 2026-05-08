@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="admin-dashboard">
+        <div class="admin-banner">
+            <div></div>
+                <h1>Welcome Admin 👋</h1>
+                <p>
+                    Monitor complaints and improve community services
+                </p>
+            </div>
+            <div class="banner-icon">
+                🛡️
+            </div>
+        </div>
+        <div class="stats-grid">
+            <div class="modern-stat-card">
+
+                <div class="stat-icon blue">
+                    📄
+                </div>
+
+                <div>
+
+                    <h2 id="totalComplaints">
+                        0
+                    </h2>
+
+                    <p>Total Complaints</p>
+
+                </div>
+
+            </div>
+
+            <div class="modern-stat-card">
+
+                <div class="stat-icon orange">
+                    ⏳
+                </div>
+
+                <div>
+
+                    <h2 id="pendingComplaints">
+                        0
+                    </h2>
+
+                    <p>Pending Issues</p>
+
+                </div>
+
+            </div>
+
+            <div class="modern-stat-card">
+
+                <div class="stat-icon green">
+                    ✅
+                </div>
+
+                <div>
+
+                    <h2 id="resolvedComplaints">
+                        0
+                    </h2>
+
+                    <p>Resolved Issues</p>
+
+                </div>
+
+            </div>
+
+            <div class="modern-stat-card">
+
+                <div class="stat-icon purple">
+                    👥
+                </div>
+
+                <div>
+
+                    <h2 id="totalUsers">
+                        0
+                    </h2>
+
+                    <p>Registered Users</p>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="activity-section">
+
+ 
+            <div class="section-header">
+
+                <h2>Recent Complaints</h2>
+
+            </div>
+
+            <div id="recentComplaints">
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <script>
+
+        let complaints =
+            JSON.parse(localStorage.getItem("complaints")) || [];
+
+        let users =
+            JSON.parse(localStorage.getItem("users")) || [];
+
+        document.getElementById("totalComplaints")
+            .innerText = complaints.length;
+
+        document.getElementById("pendingComplaints")
+            .innerText =
+            complaints.filter(
+                c => c.status === "Pending"
+            ).length;
+
+        document.getElementById("resolvedComplaints")
+            .innerText =
+            complaints.filter(
+                c => c.status === "Resolved"
+            ).length;
+
+        document.getElementById("totalUsers")
+            .innerText = users.length;
+
+        let recentDiv =
+            document.getElementById("recentComplaints");
+
+        complaints.slice(-5).reverse().forEach(c => {
+
+            let icon = "📌";
+
+            if (c.issue === "Road Damage") {
+                icon = "🚧";
+            }
+
+            if (c.issue === "Garbage Issue") {
+                icon = "🗑";
+            }
+
+            recentDiv.innerHTML += `
+
+    <div class="activity-card">
+
+      <div class="activity-left">
+
+        <div class="activity-icon">
+          ${icon}
+        </div>
+
+        <div>
+
+          <h3>${c.issue}</h3>
+
+          <p>
+            Reported by ${c.user}
+          </p>
+
+        </div>
+
+      </div>
+
+      <span class="
+        ${c.status === "Resolved"
+                    ? "resolved"
+                    : "pending"}
+      ">
+
+        ${c.status}
+
+      </span>
+
+    </div>
+
+  `;
+
+        });
+
+    </script>
+</body>
+
+</html>
