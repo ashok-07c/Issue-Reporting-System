@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Complaint Status</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            background:#f5f7ff;
+        }
+
+        .container{
+            width:100%;
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:20px;
+        }
+
+        .track-box{
+            background:white;
+            width:450px;
+            padding:35px;
+            border-radius:15px;
+            box-shadow:0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .track-box h1{
+            text-align:center;
+            color:#1f2937;
+            margin-bottom:10px;
+        }
+
+        .track-box p{
+            text-align:center;
+            color:#555;
+            margin-bottom:25px;
+        }
+
+        .input-box{
+            margin-bottom:20px;
+        }
+
+        .input-box label{
+            display:block;
+            margin-bottom:8px;
+            font-weight:bold;
+            color:#333;
+        }
+
+        .input-box input{
+            width:100%;
+            padding:12px;
+            border:1px solid #ccc;
+            border-radius:8px;
+            font-size:16px;
+        }
+
+        .btn{
+            width:100%;
+            padding:12px;
+            background:#2563eb;
+            border:none;
+            color:white;
+            font-size:16px;
+            border-radius:8px;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        .btn:hover{
+            background:#1d4ed8;
+        }
+
+        .status-box{
+            margin-top:25px;
+            padding:15px;
+            background:#eef4ff;
+            border-left:5px solid #2563eb;
+            border-radius:8px;
+            display:none;
+        }
+
+        .status-box h3{
+            margin-bottom:10px;
+            color:#1e40af;
+        }
+
+        .status-box p{
+            text-align:left;
+            margin:5px 0;
+            color:#333;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="track-box">
+
+        <h1>Track Complaint Status</h1>
+        <p>Enter your Complaint ID to check status</p>
+
+        <div class="input-box">
+            <label>Complaint ID</label>
+            <input type="text" id="complaintId" placeholder="Enter Complaint ID">
+        </div>
+
+        <button class="btn" onclick="trackStatus()">Track Status</button>
+
+        <div class="status-box" id="statusBox">
+            <h3>Complaint Details</h3>
+            <p><strong>ID:</strong> <span id="id"></span></p>
+            <p><strong>Reported By:</strong><span id="name"></span></p>
+            <p><strong>Status:</strong> <span id="status"></span></p>
+            <p><strong>Issue:</strong> Garbage Management</p>
+            <p><strong>Updated On:</strong> 15-May-2026</p>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function trackStatus(){
+
+        let complaintId = document.getElementById("complaintId").value;
+        let name = document.querySelector("#name");
+        let nameVal = ''
+        if(complaintId==""){
+            alert("Please enter Complaint ID");
+            return;
+        }
+        let status = ""
+        document.getElementById("statusBox").style.display = "block";
+        document.getElementById("id").innerText = complaintId;
+        let data = JSON.parse(localStorage.complaints);
+        data.forEach(e => {
+            if(e.id == complaintId){
+                status = e.status;
+                nameVal = ' '+e.user;
+            }
+        });
+        name.innerText = nameVal;
+        document.getElementById("status").innerText = status;
+    }
+</script>
+</body>
+</html>
+
