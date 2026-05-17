@@ -162,7 +162,8 @@
             </select>
             <br><br>
             <label for="desc">Issue Details</label>
-            <textarea name="desc" id="description" placeholder="Provide as much detail as possible..." required></textarea>
+            <textarea name="desc" id="description" placeholder="Provide as much detail as possible..."
+                required></textarea>
 
             <label for="imageUpload">Upload Photo Evidence</label>
             <input type="file" id="imageUpload" name="imageUpload" accept="image/*" required />
@@ -171,6 +172,26 @@
         </form>
     </div>
     <script>
+        let path = "";
+        let image = document.querySelector("#imageUpload");
+
+        image.addEventListener("change", () => {
+
+            let file = image.files[0];
+
+            if (file) {
+
+                let reader = new FileReader();
+
+                reader.onload = function (e) {
+                    path = e.target.result;
+                };
+
+                reader.readAsDataURL(file);
+
+            }
+
+        });
         document
             .getElementById("complaintForm")
             .addEventListener("submit", function (e) {
@@ -195,7 +216,9 @@
 
                     status: "Pending",
 
-                    date: new Date().toLocaleString()
+                    date: new Date().toLocaleString(),
+
+                    img: path
 
                 };
 
