@@ -124,8 +124,8 @@
             <p><strong>ID:</strong> <span id="id"></span></p>
             <p><strong>Reported By:</strong><span id="name"></span></p>
             <p><strong>Status:</strong> <span id="status"></span></p>
-            <p><strong>Issue:</strong> Garbage Management</p>
-            <p><strong>Updated On:</strong> 15-May-2026</p>
+            <p><strong>Issue:</strong> <span id="issue"></span></p>
+            <p><strong>Updated On:</strong> <span id="date"></span></p>
         </div>
 
     </div>
@@ -136,7 +136,11 @@
 
         let complaintId = document.getElementById("complaintId").value;
         let name = document.querySelector("#name");
-        let nameVal = ''
+        let nameVal = '';
+        let issue = document.querySelector("#issue");
+        let issueVal = '';
+        let date = document.querySelector("#date");
+        let dateVal = '';
         if(complaintId==""){
             alert("Please enter Complaint ID");
             return;
@@ -146,12 +150,16 @@
         document.getElementById("id").innerText = complaintId;
         let data = JSON.parse(localStorage.complaints);
         data.forEach(e => {
-            if(e.id == complaintId){
+           if(e.id == complaintId){
                 status = e.status;
                 nameVal = ' '+e.user;
+               issueVal = e.issue;
+               dateVal = e.date;
             }
         });
         name.innerText = nameVal;
+        issue.innerText = issueVal;
+        date.innerText = dateVal;
         document.getElementById("status").innerText = status;
     }
 </script>
