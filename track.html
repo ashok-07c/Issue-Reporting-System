@@ -154,7 +154,7 @@
                 status = e.status;
                 nameVal = ' '+e.user;
                issueVal = e.issue;
-               dateVal = e.date;
+               dateVal = new Date().toLocaleString();
             }
         });
         name.innerText = nameVal;
